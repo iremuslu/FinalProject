@@ -1,4 +1,11 @@
 <resources>
+
+    <array name="categories">
+        <item>Health</item>
+        <item>Education</item>
+        <item>Social Activity</item>
+        <item>Other Activity</item>
+    </array>
     <string name="app_name">reminderapp</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>

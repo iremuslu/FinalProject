@@ -95,6 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(RegisterActivity.this,"Registration Succesful",Toast.LENGTH_SHORT).show();
                         }
 
+
                         else{
                             Toast.makeText(RegisterActivity.this,"Error",Toast.LENGTH_SHORT).show();
                         }

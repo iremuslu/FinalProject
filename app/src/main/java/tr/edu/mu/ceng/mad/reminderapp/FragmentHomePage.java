@@ -19,6 +19,7 @@ public class FragmentHomePage extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home_page,container,false);
         Button goToHealth = view.findViewById(R.id.goToHealth);
+        Button goToEducation = view.findViewById(R.id.goToEducation);
 
 
         goToHealth.setOnClickListener(new View.OnClickListener() {
@@ -29,8 +30,17 @@ public class FragmentHomePage extends Fragment {
             }
         });
 
+        goToEducation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),EducationCategory.class);
+                startActivity(intent);
+            }
+        });
 
-        return view;
+
+
+            return view;
     }
 
 }

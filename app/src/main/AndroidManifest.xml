@@ -10,7 +10,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Reminderapp">
         <activity
-            android:name=".RemindersEducation"
+            android:name=".EditReminderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AlarmReceiver"
+            android:exported="false" />
+        <activity
+            android:name=".Reminders"
             android:exported="false" />
         <activity
             android:name=".EducationAdapter"

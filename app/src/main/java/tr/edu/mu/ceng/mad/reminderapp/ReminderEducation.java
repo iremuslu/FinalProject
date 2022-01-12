@@ -2,27 +2,27 @@ package tr.edu.mu.ceng.mad.reminderapp;
 
 import java.io.Serializable;
 
-public class RemindersEducation implements Serializable {
+public class ReminderEducation implements Serializable {
 
+    private String whouuid;
     private String reminder_id;
     private String select_category;
     private String reminder_name;
     private String date;
     private String clock;
-    private String repeat;
     private String reminder_note;
 
-    public RemindersEducation() {
+    public ReminderEducation() {
 
     }
 
-    public RemindersEducation(String reminder_id, String select_category, String reminder_name, String date, String clock, String repeat, String reminder_note) {
+    public ReminderEducation(String whouuid, String reminder_id, String select_category, String reminder_name, String date, String clock, String reminder_note) {
+        this.whouuid = whouuid;
         this.reminder_id = reminder_id;
         this.select_category = select_category;
         this.reminder_name = reminder_name;
         this.date = date;
         this.clock = clock;
-        this.repeat = repeat;
         this.reminder_note = reminder_note;
     }
 
@@ -66,17 +66,20 @@ public class RemindersEducation implements Serializable {
         this.clock = clock;
     }
 
-    public String getRepeat() {
-        return repeat;
-    }
-
-    public void setRepeat(String repeat) {
-        this.repeat = repeat;
-    }
 
     public String getReminder_note() {
         return reminder_note;
     }
 
     public void setReminder_note(String reminder_note) {
-        this.reminder_note = reminder_note;}}
+        this.reminder_note = reminder_note;
+    }
+
+    public String getWhouuid() {
+        return whouuid;
+    }
+
+    public void setWhouuid(String whouuid) {
+        this.whouuid = whouuid;
+    }
+}

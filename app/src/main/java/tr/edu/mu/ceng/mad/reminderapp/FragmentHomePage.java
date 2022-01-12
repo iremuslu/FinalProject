@@ -15,12 +15,15 @@ public class FragmentHomePage extends Fragment {
     public FragmentHomePage(){}
     @Nullable
     @Override
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_home_page,container,false);
+
         Button goToHealth = view.findViewById(R.id.goToHealth);
         Button goToEducation = view.findViewById(R.id.goToEducation);
-
+        Button goToSocialAct = view.findViewById(R.id.goToSocialAct);
+        Button goToOther = view.findViewById(R.id.goToOther);
 
         goToHealth.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,9 +41,33 @@ public class FragmentHomePage extends Fragment {
             }
         });
 
+        goToSocialAct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),SocialActCategory.class);
+                startActivity(intent);
+            }
+        });
+
+        goToOther.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),OtherRemindCategory.class);
+                startActivity(intent);
+            }
+        });
 
 
-            return view;
+        ////// NOTIFY SERVICE
+
+        Intent serviceIntent = new Intent(getContext(), ReminderService.class);
+        serviceIntent.putExtra("bisiler", String.valueOf("10000"));
+        getActivity().stopService(serviceIntent);
+        getActivity().startService(serviceIntent);
+
+
+
+        return view;
     }
 
 }

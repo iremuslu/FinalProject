@@ -16,13 +16,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
-   Button goToHomePage;
-   EditText userEmail, userPassword;
-   FirebaseAuth fAuth;
 
+
+    Button goToHomePage;
+    EditText userEmail, userPassword;
+    TextView txtViewSignUp;
+    FirebaseAuth fAuth;
+    DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,22 @@ public class LoginActivity extends AppCompatActivity {
         userEmail = findViewById(R.id.edtTxtEmail);
         userPassword = findViewById(R.id.edtTxtPass);
         goToHomePage = (Button) findViewById(R.id.goToHomePage);
+
+
+        txtViewSignUp = findViewById(R.id.txtViewSignUp);
+
+        dbHelper=new DatabaseHelper(getApplicationContext());
+        Plan plan=new Plan("7.01.2022","00:00","testgiris","testgirisnote");
+
+        dbHelper.addPlanEarly(plan);
+
+        //If there is no user account, it goes to the registration activity.
+        txtViewSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            }
+        });
 
 
 

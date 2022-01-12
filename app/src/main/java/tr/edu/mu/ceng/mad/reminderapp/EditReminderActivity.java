@@ -2,15 +2,14 @@ package tr.edu.mu.ceng.mad.reminderapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -30,7 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class AddReminderActivity extends AppCompatActivity {
+public class EditReminderActivity extends AppCompatActivity {
 
     private ImageButton btnClick3;
     private EditText editTextReminderName;
@@ -54,25 +53,25 @@ public class AddReminderActivity extends AppCompatActivity {
     int Minute;
 
     private FirebaseDatabase database;
-    private DatabaseReference myRef;
 
     ImageView imgBackward;
+
+    String rawid, rawnamei, rawdate, rawcate,rawtime,rawnote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_reminder);
+        setContentView(R.layout.activity_edit_reminder);
 
-        boolean alarm = (PendingIntent.getBroadcast(this, 0, new Intent("ALARM"), PendingIntent.FLAG_NO_CREATE) == null);
-        if(alarm){
-            Intent itAlarm = new Intent("ALARM");
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0,itAlarm,0);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.add(Calendar.SECOND, 3);
-            AlarmManager alarme = (AlarmManager) getSystemService(ALARM_SERVICE);
-            alarme.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),60000, pendingIntent);
-        }
+
+        Intent intent = getIntent();
+        Log.d("yazdirsana",intent.getStringExtra("remiid"));
+        rawid = intent.getStringExtra("remiid");
+        rawnamei = intent.getStringExtra("reminame");
+        rawcate = intent.getStringExtra("remicate");
+        rawdate = intent.getStringExtra("remidate");
+        rawtime = intent.getStringExtra("remitime");
+        rawnote = intent.getStringExtra("reminote");
 
 
 
@@ -81,19 +80,18 @@ public class AddReminderActivity extends AppCompatActivity {
         imgBackward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent intent = new Intent(AddReminderActivity.this, HomePage.class);
-                startActivity(intent);
-
+                finish();
             }
         });
-
 
         editTextReminderName = findViewById(R.id.editTextReminderName);
         editTextReminderNote = findViewById(R.id.editTextReminderNote);
 
+        editTextReminderNote.setText(rawnote);
+
+        editTextReminderName.setText(rawnamei);
+
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("reminder");
 
         //spinner
         spinner = findViewById(R.id.spinnerSelectCategory);
@@ -106,13 +104,17 @@ public class AddReminderActivity extends AppCompatActivity {
         categorychoseeadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
                 android.R.id.text1,category);
 
+
         spinner.setAdapter(categorychoseeadapter);
+
 
 
 
         //datepicker
         txtdate = findViewById(R.id.txtdate);
         datePickerdate = findViewById(R.id.datePickerdate);
+
+        datePickerdate.setText(rawdate);
 
         Calendar cal = Calendar.getInstance();
         final int year = cal.get(Calendar.YEAR);
@@ -122,7 +124,7 @@ public class AddReminderActivity extends AppCompatActivity {
         txtdate.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                DatePickerDialog datePickerDialog = new DatePickerDialog(AddReminderActivity.this,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(EditReminderActivity.this,
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                         setListener,year,month,day);
                 datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -145,7 +147,7 @@ public class AddReminderActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        AddReminderActivity.this, new DatePickerDialog.OnDateSetListener() {
+                        EditReminderActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int day) {
                         month = month + 1;
@@ -158,19 +160,16 @@ public class AddReminderActivity extends AppCompatActivity {
             }
         });
 
-
-
-
         //timePicker
 
         txtTime = findViewById(R.id.txtTime);
-
+        txtTime.setText(rawtime);
 
         txtTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 TimePickerDialog timePickerDialog = new TimePickerDialog(
-                        AddReminderActivity.this,
+                        EditReminderActivity.this,
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hour, int minute) {
@@ -210,33 +209,47 @@ public class AddReminderActivity extends AppCompatActivity {
 
                 ReminderEducation remindersEducation = new ReminderEducation(uuid,"",select_category,reminder_name,date, time, reminder_note);
 
-                myRef.push().setValue(remindersEducation);
+                DatabaseReference myRefCategory = database.getReference("reminder/"+ rawid + "/category");
+                DatabaseReference myRefName = database.getReference("reminder/"+ rawid + "/reminder_name");
+                DatabaseReference myRefDate = database.getReference("reminder/"+ rawid + "/date");
+                DatabaseReference myRefClock = database.getReference("reminder/"+ rawid + "/clock");
+                DatabaseReference myRefNote = database.getReference("reminder/"+ rawid + "/reminder_note");
 
-                Toast.makeText(AddReminderActivity.this, "Reminder is created.", Toast.LENGTH_SHORT).show();
-                category.add("");
-                category.add("");
-                category.add("");
-                category.add("");
-                Intent serviceIntent = new Intent(AddReminderActivity.this, ReminderService.class);
-                serviceIntent.putExtra("bisiler", String.valueOf("10000"));
-                stopService(serviceIntent);
-                startService(serviceIntent);
+                myRefCategory.setValue(select_category);
+                myRefName.setValue(reminder_name);
+                myRefDate.setValue(date);
+                myRefClock.setValue(time);
+                myRefNote.setValue(reminder_note);
+
+                Toast.makeText(EditReminderActivity.this, "Reminder updated", Toast.LENGTH_SHORT).show();
 
                 if (select_category.equals("Health")){
-                    startActivity(new Intent(AddReminderActivity.this,HealthCategory.class));
-                    finish();
-                } else if (select_category.equals("Education")){
-                    startActivity(new Intent(AddReminderActivity.this,EducationCategory.class));
+                    startActivity(new Intent(EditReminderActivity.this,HealthCategory.class));
                     finish();
                 } else if (select_category.equals("Social Activity")){
-                    startActivity(new Intent(AddReminderActivity.this,SocialActCategory.class));
+                    startActivity(new Intent(EditReminderActivity.this,SocialActCategory.class));
                     finish();
                 } else if (select_category.equals("Other Activity")){
-                    startActivity(new Intent(AddReminderActivity.this,OtherRemindCategory.class));
+                    startActivity(new Intent(EditReminderActivity.this,OtherRemindCategory.class));
                     finish();
                 }
+
+
+
             }
         });
+
+        if (rawcate.equals("Health")){
+            spinner.setSelection(0);
+        } else if (rawcate.equals("Education")){
+            spinner.setSelection(1);
+        }  else if (rawcate.equals("Social Activity")){
+            spinner.setSelection(2);
+        } else if (rawcate.equals("Other Activity")){
+            spinner.setSelection(3);
+        }
+
+
 
     }
 
